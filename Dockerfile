@@ -11,7 +11,8 @@ ENV TAGS "bindata $TAGS"
 ARG CGO_EXTRA_CFLAGS
 
 #Build deps
-RUN apk --no-cache add build-base git nodejs npm openssh
+RUN apk --no-cache add build-base git nodejs npm openssh && \
+    echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
 
 #Setup repo
 WORKDIR /
