@@ -14,11 +14,11 @@ ARG CGO_EXTRA_CFLAGS
 RUN apk --no-cache add build-base git nodejs npm openssh && \
 
 #Setup repo
-WORKDIR /
+WORKDIR /go
 RUN git clone --depth 1 https://github.com/go-gitea/gitea.git 
 
 #Checkout version if set
-WORKDIR /gitea
+WORKDIR /go/gitea
 RUN latestTag=$(git describe --tags `git rev-list --tags --max-count=1`) && \
     if [ -n "${latestTag}" ]; then git checkout "${latestTag}"; fi && \
     make clean-all build
