@@ -12,12 +12,10 @@ ARG CGO_EXTRA_CFLAGS
 
 #Build deps
 RUN apk --no-cache add build-base git nodejs npm openssh && \
-    mkdir -p ~/.ssh && \
-    echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
 
 #Setup repo
 WORKDIR /
-RUN git clone --depth 1 git@github.com:go-gitea/gitea.git
+RUN git clone --depth 1 https://github.com/go-gitea/gitea.git 
 
 #Checkout version if set
 WORKDIR /gitea
