@@ -12,6 +12,7 @@ ARG CGO_EXTRA_CFLAGS
 
 #Build deps
 RUN apk --no-cache add build-base git nodejs npm openssh && \
+    mkdir -p ~/.ssh && \
     echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
 
 #Setup repo
