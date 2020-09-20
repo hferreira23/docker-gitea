@@ -11,15 +11,18 @@ ENV TAGS "bindata $TAGS"
 ARG CGO_EXTRA_CFLAGS
 
 #Build deps
-RUN apk --no-cache add build-base git nodejs npm openssh && \
+RUN apk --no-cache add build-base git nodejs npm openssh bash
+
+#Define Shell
+SHELL ["/bin/bash", "-c"]
 
 #Setup repo
 WORKDIR /go
-RUN git clone --depth 1 https://github.com/go-gitea/gitea.git 
+RUN git clone --depth 1 https://github.com/go-gitea/gitea.git
 
 #Checkout version if set
 WORKDIR /go/gitea
-RUN latestTag=$(git describe --tags `git rev-list --tags --max-count=1`) && \
+RUN latestTag=$(git rev-list --tags --max-count=1) && \
     if [ -n "${latestTag}" ]; then git checkout "${latestTag}"; fi && \
     make clean-all build
 
