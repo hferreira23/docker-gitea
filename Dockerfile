@@ -31,7 +31,9 @@ LABEL maintainer="maintainers@gitea.io"
 
 EXPOSE 22 3000
 
-RUN apk update && \
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community/" >> /etc/apk/repositories && \
+    echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositories && \
+    apk update && \
     apk upgrade --available && \
     apk --update add \
     bash \
@@ -39,6 +41,7 @@ RUN apk update && \
     curl \
     gettext \
     git \
+    hub \
     linux-pam \
     openssh \
     s6 \
