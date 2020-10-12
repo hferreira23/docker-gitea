@@ -1,10 +1,12 @@
 name: gitea_ci
 
 on:
-  push:
+  pull_request:
+    types: closed
     branches: master
   schedule:
     - cron: '0 1 * * *'
+  workflow_dispatch:
 
 jobs:
   main:
@@ -36,3 +38,10 @@ jobs:
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
+      - 
+       name: Docker Hub Description
+       uses: peter-evans/dockerhub-description@v2
+       with:
+         username: ${{ secrets.DOCKER_USER }}
+         password: ${{ secrets.DOCKER_PASSWORD }}
+         repository: hferreira/gitea

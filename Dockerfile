@@ -27,7 +27,7 @@ RUN latestTag=$(git rev-list --tags --max-count=1) && \
     make clean-all build
 
 FROM alpine:edge
-LABEL maintainer="maintainers@gitea.io"
+LABEL maintainer="Hugo Ferreira"
 
 EXPOSE 22 3000
 
