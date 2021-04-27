@@ -18,6 +18,8 @@ jobs:
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v1
+        with:
+          image: crazymax/binfmt:v6.0.0-rc4
       -
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
