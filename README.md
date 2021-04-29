@@ -1,6 +1,8 @@
 **Gitea Docker Container**
 
-Built on alpine:edge with the latest release tag of Gitea.
+Daily build of Gitea on alpine:edge with the latest master commits.
+
+Suported archs: amd64, arm7, arm64.
 
 Docker Compose example
 
@@ -18,3 +20,5 @@ services:
       - /opt/gitea/:/data
     restart: unless-stopped
 ```
+
+Docker Hub: https://hub.docker.com/r/hferreira/gitea
