@@ -11,10 +11,7 @@ ENV TAGS "bindata $TAGS"
 ARG CGO_EXTRA_CFLAGS
 
 #Build deps
-RUN apk --no-cache add build-base git nodejs npm openssh bash
-
-#Define Shell
-SHELL ["/bin/bash", "-c"]
+RUN apk --no-cache add build-base git nodejs npm openssh
 
 #Setup repo
 WORKDIR /go
@@ -22,9 +19,11 @@ RUN git clone --depth 1 https://github.com/go-gitea/gitea.git
 
 #Checkout version if set
 WORKDIR /go/gitea
-RUN latestTag=$(git rev-list --tags --max-count=1) && \
-    if [ -n "${latestTag}" ]; then git checkout "${latestTag}"; fi && \
+RUN if [ -n "${GITEA_VERSION}" ]; then git checkout "${GITEA_VERSION}"; fi && \
     make clean-all build
+
+# Begin env-to-ini build
+RUN go build contrib/environment-to-ini/environment-to-ini.go
 
 FROM alpine:edge
 LABEL maintainer="Hugo Ferreira"
@@ -38,16 +37,8 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community/" >> /etc/apk/repo
     apk --update add \
     bash \
     ca-certificates \
-    curl \
     gettext \
     git \
-    hub \
-    linux-pam \
-    openssh \
-    s6 \
-    sqlite \
-    su-exec \
-    tzdata \
     gnupg && \
     rm -rf /tmp/* /var/tmp/* /var/cache/apk/* /var/cache/distfiles/*
 
@@ -63,14 +54,22 @@ RUN addgroup \
     git && \
   echo "git:$(dd if=/dev/urandom bs=24 count=1 status=none | base64)" | chpasswd
 
-ENV USER git
-ENV GITEA_CUSTOM /data/gitea
+RUN mkdir -p /var/lib/gitea /etc/gitea
+RUN chown git:git /var/lib/gitea /etc/gitea
 
-VOLUME ["/data"]
+COPY --from=build-env --chown=root:root /go/gitea/docker/rootless /
+COPY --from=build-env --chown=root:root /go/gitea/gitea /usr/local/bin/gitea
+COPY --from=build-env --chown=root:root /go/gitea/environment-to-ini /usr/local/bin/environment-to-ini
 
-ENTRYPOINT ["/usr/bin/entrypoint"]
-CMD ["/bin/s6-svscan", "/etc/s6"]
+USER git:git
+ENV GITEA_WORK_DIR /var/lib/gitea
+ENV GITEA_CUSTOM /var/lib/gitea/custom
+ENV GITEA_TEMP /tmp/gitea
+#TODO add to docs the ability to define the ini to load (usefull to test and revert a config)
+ENV GITEA_APP_INI /etc/gitea/app.ini
+ENV HOME "/var/lib/gitea/git"
+VOLUME ["/var/lib/gitea", "/etc/gitea"]
+WORKDIR /var/lib/gitea
 
-COPY --from=build-env /go/gitea/docker/root /
-COPY --from=build-env /go/gitea/gitea /app/gitea/gitea
-RUN ln -s /app/gitea/gitea /usr/local/bin/gitea
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+CMD []
