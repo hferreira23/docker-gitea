@@ -2,12 +2,14 @@
 
 Daily build of Gitea on alpine:edge with the latest master commits.
 
+This container uses the rootless gitea dockerfile as a base.
+
 Suported archs: amd64, arm7, arm64.
 
-Docker Compose example
+Basic Docker Compose example
 
 ```yaml
-version: "3.8"
+version: "3.9"
 services:
   gitea:
     container_name: gitea
@@ -17,7 +19,8 @@ services:
     ports:
       - "2222:22"
     volumes:
-      - /opt/gitea/:/data
+      - /opt/gitea/:/var/lib/gitea
+      - /opt/gitea/conf/app.ini:/etc/gitea/app.ini
     restart: unless-stopped
 ```
 
