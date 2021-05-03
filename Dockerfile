@@ -47,12 +47,11 @@ RUN addgroup \
     git && \
     adduser \
     -S -H -D \
-    -h /data/git \
+    -h /var/lib/gitea/git \
     -s /bin/bash \
     -u 2001 \
     -G git \
-    git && \
-  echo "git:$(dd if=/dev/urandom bs=24 count=1 status=none | base64)" | chpasswd
+    git
 
 RUN mkdir -p /var/lib/gitea /etc/gitea
 RUN chown git:git /var/lib/gitea /etc/gitea
