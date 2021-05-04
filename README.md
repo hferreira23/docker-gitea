@@ -25,3 +25,5 @@ services:
 ```
 
 Docker Hub: https://hub.docker.com/r/hferreira/gitea
+
+[![gitea_ci](https://github.com/hferreira23/docker-gitea/actions/workflows/image.yml/badge.svg?branch=master)](https://github.com/hferreira23/docker-gitea/actions/workflows/image.yml)
