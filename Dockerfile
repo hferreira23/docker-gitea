@@ -1,6 +1,6 @@
 ###################################
 #Build stage
-FROM golang:alpine AS build-env
+FROM golang:1.17-alpine3.13 AS build-env
 
 ARG GOPROXY
 ENV GOPROXY ${GOPROXY:-direct}
@@ -25,22 +25,18 @@ RUN if [ -n "${GITEA_VERSION}" ]; then git checkout "${GITEA_VERSION}"; fi && \
 # Begin env-to-ini build
 RUN go build contrib/environment-to-ini/environment-to-ini.go
 
-FROM alpine:edge
+FROM alpine:3.13
 LABEL maintainer="Hugo Ferreira"
 
 EXPOSE 22 3000
 
-RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community/" >> /etc/apk/repositories && \
-    echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositories && \
-    apk update && \
-    apk upgrade --available && \
-    apk --update add \
+RUN apk --no-cache add \
     bash \
     ca-certificates \
     gettext \
     git \
-    gnupg && \
-    rm -rf /tmp/* /var/tmp/* /var/cache/apk/* /var/cache/distfiles/*
+    curl \
+    gnupg
 
 RUN addgroup \
     -S -g 2001 \
