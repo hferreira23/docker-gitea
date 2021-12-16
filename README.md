@@ -7,7 +7,7 @@ Daily build of Gitea on alpine:edge with the latest master commits.
 
 This container uses the rootless gitea dockerfile as a base.
 
-Suported archs: amd64, arm7, arm64.
+Suported archs: amd64, arm64.
 
 Basic Docker Compose example
 
