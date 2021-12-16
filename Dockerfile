@@ -54,7 +54,7 @@ RUN mkdir -p /var/lib/gitea /etc/gitea
 RUN chown git:git /var/lib/gitea /etc/gitea
 
 COPY --from=build-env --chown=root:root /go/gitea/docker/rootless /
-COPY --from=build-env --chown=root:root /go/gitea/gitea /usr/local/bin/gitea
+COPY --from=build-env --chown=root:root /go/gitea/gitea /app/gitea/gitea
 COPY --from=build-env --chown=root:root /go/gitea/environment-to-ini /usr/local/bin/environment-to-ini
 RUN chmod 755 /usr/local/bin/docker-entrypoint.sh /usr/local/bin/docker-setup.sh /app/gitea/gitea /usr/local/bin/gitea /usr/local/bin/environment-to-ini
 
