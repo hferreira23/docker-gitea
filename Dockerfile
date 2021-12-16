@@ -25,7 +25,7 @@ RUN if [ -n "${GITEA_VERSION}" ]; then git checkout "${GITEA_VERSION}"; fi && \
 # Begin env-to-ini build
 RUN go build contrib/environment-to-ini/environment-to-ini.go
 
-FROM alpine:3.13
+FROM alpine:edge
 LABEL maintainer="Hugo Ferreira"
 
 EXPOSE 22 3000
@@ -36,7 +36,8 @@ RUN apk --no-cache add \
     gettext \
     git \
     curl \
-    gnupg
+    gnupg && \
+    apk --no-cache upgrade --available
 
 RUN addgroup \
     -S -g 2001 \
@@ -55,11 +56,14 @@ RUN chown git:git /var/lib/gitea /etc/gitea
 COPY --from=build-env --chown=root:root /go/gitea/docker/rootless /
 COPY --from=build-env --chown=root:root /go/gitea/gitea /usr/local/bin/gitea
 COPY --from=build-env --chown=root:root /go/gitea/environment-to-ini /usr/local/bin/environment-to-ini
+RUN chmod 755 /usr/local/bin/docker-entrypoint.sh /usr/local/bin/docker-setup.sh /app/gitea/gitea /usr/local/bin/gitea /usr/local/bin/environment-to-ini
 
 USER git:git
 ENV GITEA_WORK_DIR /var/lib/gitea
 ENV GITEA_CUSTOM /var/lib/gitea/custom
 ENV GITEA_TEMP /tmp/gitea
+ENV TMPDIR /tmp/gitea
+
 #TODO add to docs the ability to define the ini to load (usefull to test and revert a config)
 ENV GITEA_APP_INI /etc/gitea/app.ini
 ENV HOME "/var/lib/gitea/git"
