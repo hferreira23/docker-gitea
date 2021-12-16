@@ -10,7 +10,7 @@ on:
 
 jobs:
   amd64:
-    runs-on: amd64
+    runs-on: x64
     steps:
       -
         name: Checkout
