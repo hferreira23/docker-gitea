@@ -63,6 +63,7 @@ jobs:
         run: echo ${{ steps.docker_build.outputs.digest }}
   manifest:
     runs-on: ubuntu-latest
+    needs: [arm64, amd64]
     steps:
       -
         name: Login to DockerHub
