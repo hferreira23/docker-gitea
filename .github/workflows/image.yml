@@ -36,7 +36,7 @@ jobs:
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
   arm64:
-    runs-on: arm64
+    runs-on: ARM64
     steps:
       -
         name: Checkout
